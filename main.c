@@ -13,10 +13,24 @@
 #include "pipex.h"
 #include <unistd.h>
 
-void	ft_child(t_pipex pipex)
+void	ft_child_first(t_pipex pipex)
 {
-	dup2(int __fd, int __fd2);
+	dup2(pipex.pipe[1], 1);
+	close(pipex.pipe[0]);
+	dup2(pipex.f_in, 0);
+	pipex arg
+	if (pipex arg)
+		execve(pipe cmd, args , pipex.env);
+}
 
+void	ft_child_sec(t_pipex pipex)
+{
+	dup2(pipex.pipe[0], 0);
+	close(pipex.pipe[1]);
+	dup2(pipex.f_out, 1);
+	pipex arg
+	if (pipex arg)
+		execve(pipe cmd, args , pipex.env);
 }
 
 void	ft_pipex(t_pipex pipex)
@@ -42,14 +56,20 @@ int	main(int argc, char **argv, char **envp)
 	if (pipex.f_out < 0)
 		perror("Error : ");
 	pipex.env = envp;
+	if (pipe(pipex.pipe) == 0)
+		perror("pipe :");
 	while (i < argc)
 	{
 		pipex.cmd_arg[i] = ft_split(argv[i], ' ');
 		pipex.path = ft_access_cmd(pipex.cmd_arg, envp);
 		i++;
 	}
-	pipex.pid = fork();
-	if (pipex.pid == 0)
-		ft_child(pipex);
+	pipex.pid1 = fork();
+	if (pipex.pid1 == 0)
+		ft_child_first(pipex);
+	pipex.pid2 = fork();
+		ft_child_sec(pipex);
+	waitpid(pipex.pid1, NULL, 0);
+	waitpid(pipex.pid2, NULL, 0);
 	return (0);
 }
