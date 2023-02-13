@@ -6,13 +6,28 @@
 /*   By: nminotte <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/26 16:39:36 by nminotte          #+#    #+#             */
-/*   Updated: 2023/02/03 17:40:55 by nminotte         ###   ########.fr       */
+/*   Updated: 2023/02/13 17:54:12 by nminotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 #include <stdlib.h>
 #include <unistd.h>
+
+t_pipex	free_cmd_path(t_pipex pipex)
+{
+	int	i;
+
+	i = 0;
+	//free(pipex.path);
+	while (pipex.cmd_arg[i])
+	{
+		free(pipex.cmd_arg[i]);
+		i++;
+	}
+	free(pipex.cmd_arg);
+	return (pipex);
+}
 
 char	**ft_path(char **env)
 {
@@ -33,7 +48,7 @@ char	**ft_path(char **env)
 	return (epath);
 }
 
-char	*ft_access_cmd(char **argv, char **env)
+char	*ft_access_cmd(char **env, char *arg)
 {
 	char	**path;
 	char	*thepath;
@@ -47,6 +62,8 @@ char	*ft_access_cmd(char **argv, char **env)
 	while (path[i])
 	{
 		path[i] = ft_strjoin_free(path[i], "/");
+		path[i] = ft_strjoin_free(path[i], arg);
+
 	/*	if (!arg)
 			path[i] = ft_strjoin_free(path[i], argv);*/
 		result = access(path[i], X_OK);
@@ -63,6 +80,7 @@ char	*ft_access_cmd(char **argv, char **env)
 		free(path[i]);
 		i++;
 	}
+//	printf("\nresult = %s\n result = %d \n", thepath, access(thepath, X_OK));
 	free(path);
 //	printf("\n\the path is %s\n", thepath);
 	return (thepath);
