@@ -23,12 +23,14 @@
 
 typedef struct s_pipex
 {
+	int		pipe;
 	int		f_in;
 	int		f_out;
 	char	**cmd_arg;
 	char	*path;
 	char	**env;
-	pid_t	pid;
+	pid_t	pid1;
+	pid_t	pid2;
 }	t_pipex;
 
 int		main(int argc, char **argv, char **envp);
